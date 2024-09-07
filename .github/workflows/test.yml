@@ -37,7 +37,8 @@ jobs:
       - name: Run mypy
         shell: bash
         run: |
-          poetry run mypy cdc
+          mkdir .mypy_cache
+          poetry run mypy app --namespace-packages --explicit-package-bases
 
       - name: Run bandit
         shell: bash

@@ -2,7 +2,7 @@ import asyncio
 import random
 
 from fastapi import FastAPI
-from faststream.nats import JStream
+from faststream.nats import JStream, DeliverPolicy
 from faststream.nats.fastapi import NatsRouter, Logger
 from app.models import Property, Target
 
@@ -30,7 +30,7 @@ to_changes = router.publisher(
     "properties",
     description="Consumes messages from names topic and produces messages to greetings topic",
     stream=stream,
-    deliver_policy="new",
+    deliver_policy=DeliverPolicy.NEW,
 )
 async def on_properties(msg: Property, logger: Logger) -> None:
     property = f"Delivering {msg.property_id}"
