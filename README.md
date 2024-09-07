@@ -9,7 +9,7 @@ To set up your development environment, follow these steps:
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/francbartoli/catasto-cdc.git
+   git clone https://github.com/catasto-open/catasto-cdc.git
    cd catasto-cdc
    ```
 
@@ -21,7 +21,7 @@ To set up your development environment, follow these steps:
 
 ## Development
 
-The application code is located in the `app/` directory. You can add new features or fix bugs in this directory. However, remember that code changes must be accompanied by corresponding updates to the tests located in the `tests/` directory.
+The application code is located in the `cdc/` directory. You can add new features or fix bugs in this directory. However, remember that code changes must be accompanied by corresponding updates to the tests located in the `tests/` directory.
 
 ## Running Tests
 
@@ -44,7 +44,7 @@ To run the [`FastStream`](https://github.com/airtai/faststream) application loca
 2. Start the [`FastStream`](https://github.com/airtai/faststream) application with the following command:
 
    ```bash
-   faststream run catasto-cdc.application:app --workers 1
+   faststream run app.cdc:app --workers 1
    ```
 
 3. You can now send messages to the Nats and can test the application. Optionally, if you want to view messages in it, you can subscribe to it using the provided script:
@@ -68,7 +68,7 @@ If you'd like to build and test the [`Docker`](https://www.docker.com/) image lo
 1. Run the provided script to build the [`Docker`](https://www.docker.com/) image locally. Use the following command:
 
    ```bash
-   ./scripts/build_docker.sh francbartoli catasto-cdc
+   ./scripts/build_docker.sh catasto-open catasto-cdc
    ```
 
    This script will build the [`Docker`](https://www.docker.com/) image locally with the same name as the one built in `CI`.
@@ -79,10 +79,16 @@ If you'd like to build and test the [`Docker`](https://www.docker.com/) image lo
    ./scripts/start_nats_broker_locally.sh
    ```
 
+   Then check the process with the command:
+
+   ```bash
+   docker compose -f scripts/services.yml ps -a
+   ```
+
 3. Once Nats is up and running, you can start the local [`Docker`](https://www.docker.com/) container using the following command:
 
    ```bash
-   docker run --rm --name faststream-app --net=host ghcr.io/francbartoli/catasto-cdc:latest
+   docker run --rm --name faststream-app --net=host ghcr.io/catasto-open/catasto-cdc:latest
    ```
 
    * `--rm`: This flag removes the container once it stops running, ensuring that it doesn't clutter your system with unused containers.
@@ -98,6 +104,12 @@ If you'd like to build and test the [`Docker`](https://www.docker.com/) image lo
    ```bash
    ./scripts/stop_nats_broker_locally.sh
    ```
+
+6. To access the logs of the NATS broker, simply run the command:
+
+  ```bash
+  docker compose -f scripts/services.yml logs --follow
+  ```
 
 ## Code Linting
 
@@ -124,7 +136,7 @@ If there are any static analysis errors, resolve them in your code and rerun the
 1. Run the following command to view the [`AsyncAPI`](https://www.asyncapi.com/) documentation:
 
    ```bash
-   faststream docs serve catasto-cdc.application:app
+   faststream docs serve app.cdc:app
    ```
 
    This command builds the [`AsyncAPI`](https://www.asyncapi.com/) specification file, generates [`AsyncAPI`](https://www.asyncapi.com/) documentation based on the specification, and serves it at `localhost:8000`.
@@ -171,7 +183,7 @@ After the **Deploy FastStream AsyncAPI Docs** workflow in `CI` has been successf
 To view the deployed [`AsyncAPI`](https://www.asyncapi.com/) documentation, open your web browser and navigate to the following URL:
 
 ```txt
-https://francbartoli.github.io/catasto-cdc/
+https://catasto-open.github.io/catasto-cdc/
 ```
 
 You will be directed to the [**GitHub Pages**](https://pages.github.com/) site where your [`AsyncAPI`](https://www.asyncapi.com/) documentation is hosted. This hosted documentation allows you to easily share your [`AsyncAPI`](https://www.asyncapi.com/) specifications with others and provides a centralized location for reviewing the [`AsyncAPI`](https://www.asyncapi.com/) documentation.
@@ -183,13 +195,13 @@ Once the **Build Docker Image** workflow in `CI` has successfully completed, the
 1. Pull the [`Docker`](https://www.docker.com/) image from the [**GitHub Container Registry**](https://ghcr.io) to your server using the following command:
 
    ```bash
-   docker pull ghcr.io/francbartoli/catasto-cdc:latest
+   docker pull ghcr.io/catasto-open/catasto-cdc:latest
    ```
 
 2. After successfully pulling the image, start the [`Docker`](https://www.docker.com/) container using the following command:
 
    ```bash
-   docker run --rm --name faststream-app --env-file /path/to/env-file ghcr.io/francbartoli/catasto-cdc:latest
+   docker run --rm --name faststream-app --env-file /path/to/env-file ghcr.io/catasto-open/catasto-cdc:latest
    ```
 
    * `--rm`: This flag removes the container once it stops running, ensuring that it doesn't clutter your system with unused containers.
@@ -203,3 +215,14 @@ By following these steps, you can easily deploy your [`FastStream`](https://gith
 ---
 
 Happy coding with [`FastStream`](https://github.com/airtai/faststream) Application! If you have any questions or encounter any problems, feel free to reach out to us. We appreciate your contributions and commitment to maintaining code quality.
+
+## How to start the application
+
+Run the following command to start the FastAPI application that wraps the NATS broker:
+
+  ```bash
+  uvicorn app.cdc:app --host 0.0.0.0 --port 5000 --reload --loop asyncio
+  ```
+
+Please note:
+  If the broker somehow has been restarted then you have to do the same with the application.

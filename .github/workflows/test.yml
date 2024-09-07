@@ -1,5 +1,5 @@
 name: Tests
-on:  [workflow_dispatch, pull_request, push]
+on: [workflow_dispatch, pull_request, push]
 
 jobs:
   static_analysis:
@@ -17,11 +17,11 @@ jobs:
           pip install -e ".[static-analysis]"
       - name: Run mypy
         shell: bash
-        run: mypy catasto-cdc
+        run: mypy cdc
 
       - name: Run bandit
         shell: bash
-        run: bandit -c pyproject.toml -r catasto-cdc
+        run: bandit -c pyproject.toml -r cdc
 
   test:
     runs-on: ubuntu-latest

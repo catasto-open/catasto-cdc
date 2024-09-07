@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t ghcr.io/francbartoli/catasto-cdc:latest .
+docker build -t ghcr.io/catasto-open/catasto-cdc:latest .

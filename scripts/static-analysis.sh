@@ -2,7 +2,7 @@
 set -e
 
 echo "Running mypy..."
-mypy catasto-cdc
+mypy cdc
 
 echo "Running bandit..."
-bandit -c pyproject.toml -r catasto-cdc
+bandit -c pyproject.toml -r cdc

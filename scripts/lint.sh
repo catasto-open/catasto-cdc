@@ -1,10 +1,10 @@
 #!/bin/bash
 
 echo "Running pyup_dirs..."
-pyup_dirs --py38-plus --recursive catasto-cdc tests
+pyup_dirs --py310-plus --recursive cdc tests
 
 echo "Running ruff..."
-ruff catasto-cdc tests --fix
+ruff cdc tests --fix
 
 echo "Running black..."
-black catasto-cdc tests
+black cdc tests

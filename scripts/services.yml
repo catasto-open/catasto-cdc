@@ -1,18 +1,16 @@
 version: "3"
 services:
   # nosemgrep: yaml.docker-compose.security.writable-filesystem-service.writable-filesystem-service
-  
-  
+
   nats:
     image: nats
     container_name: nats
-    command: -js
+    command: --jetstream --store_dir /tmp/nats/ --debug
     ports:
       - 4222:4222
-      - 8222:8222  # management
-  
-  
-  
+      - 6222:6222
+      - 8222:8222 # management
+
     # https://semgrep.dev/r?q=yaml.docker-compose.security.no-new-privileges.no-new-privileges
     security_opt:
       - no-new-privileges:true
