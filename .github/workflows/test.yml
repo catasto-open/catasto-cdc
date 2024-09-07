@@ -5,16 +5,35 @@ jobs:
   static_analysis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - name: Install Dependencies and library
-        shell: bash
-        run: |
-          set -ux
-          python -m pip install --upgrade pip
-          pip install -e ".[static-analysis]"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      - name: Install project
+        run: poetry install --no-interaction
+      # - name: Install Dependencies and library
+      #   shell: bash
+      #   run: |
+      #     set -ux
+      #     python -m pip install --upgrade pip
+      #     pip install -e ".[static-analysis]"
       - name: Run mypy
         shell: bash
         run: mypy cdc
@@ -28,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - name: Install dependencies
