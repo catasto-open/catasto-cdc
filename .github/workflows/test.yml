@@ -36,11 +36,15 @@ jobs:
       #     pip install -e ".[static-analysis]"
       - name: Run mypy
         shell: bash
-        run: mypy cdc
+        run: |
+          source .venv/bin/activate
+          mypy cdc
 
       - name: Run bandit
         shell: bash
-        run: bandit -c pyproject.toml -r cdc
+        run: |
+          source .venv/bin/activate
+          bandit -c pyproject.toml -r cdc
 
   test:
     runs-on: ubuntu-latest
