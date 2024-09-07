@@ -37,14 +37,14 @@ jobs:
       - name: Run mypy
         shell: bash
         run: |
-          source .venv/bin/activate
-          mypy cdc
+          poetry shell
+          poetry run mypy cdc
 
       - name: Run bandit
         shell: bash
         run: |
-          source .venv/bin/activate
-          bandit -c pyproject.toml -r cdc
+          poetry shell
+          poetry run bandit -c pyproject.toml -r cdc
 
   test:
     runs-on: ubuntu-latest
