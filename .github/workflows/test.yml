@@ -28,12 +28,6 @@ jobs:
         run: poetry install --no-interaction --no-root
       - name: Install project
         run: poetry install --no-interaction
-      # - name: Install Dependencies and library
-      #   shell: bash
-      #   run: |
-      #     set -ux
-      #     python -m pip install --upgrade pip
-      #     pip install -e ".[static-analysis]"
       - name: Run mypy
         shell: bash
         run: |
