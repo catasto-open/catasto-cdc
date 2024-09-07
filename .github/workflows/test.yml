@@ -37,13 +37,11 @@ jobs:
       - name: Run mypy
         shell: bash
         run: |
-          poetry shell
           poetry run mypy cdc
 
       - name: Run bandit
         shell: bash
         run: |
-          poetry shell
           poetry run bandit -c pyproject.toml -r cdc
 
   test:
@@ -74,5 +72,4 @@ jobs:
         run: poetry install --no-interaction
       - name: Test with pytest
         run: |
-          poetry shell
           poetry run pytest
