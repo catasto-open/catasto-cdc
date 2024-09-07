@@ -15,10 +15,10 @@ async def on_changes(msg: Target) -> None:
 async def test_on_properties():
     async with TestNatsBroker(router.broker) as br:
         property = Property(
-            identificativo_immobile=1,
-            data_aggiornamento=datetime.now(),
-            tipo_immobile=PropertyTypeEnum.F,
-            identificativo_operazione=ChangeTypeEnum.accorpamento,
+            property_id=1,
+            changed_date=datetime.now(),
+            property_type=PropertyTypeEnum.F,
+            operation_id=ChangeTypeEnum.accorpamento,
         )
         await br.publish(property, "properties", stream="cdc-stream")
         # on_properties.mock.assert_called_with(property.model_dump(by_alias=True))
