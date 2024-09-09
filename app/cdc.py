@@ -5,10 +5,11 @@ from fastapi import FastAPI
 from faststream.nats import JStream, DeliverPolicy
 from faststream.nats.fastapi import NatsRouter, Logger
 from app.models import Property, Target
+from app.config.app import configuration as cfg
 
 
 router = NatsRouter(
-    "nats://localhost:4222",
+    cfg.NATS_SERVER_URL,
     schema_url="/asyncapi",
     include_in_schema=True,
 )
@@ -18,17 +19,21 @@ title = "My FastStream service"
 description = "Description of my FastStream service"
 
 app = FastAPI(title=title, version=version, description=description)
-stream = JStream(name="cdc-stream")
+stream = JStream(name=cfg.STREAM)
 
 to_changes = router.publisher(
-    "changes",
-    description="Produces a message on greetings after receiving a meesage on names",
+    cfg.NATS_NOTIFICATION_SUBJECT,
+    description=f"\
+    Produces a message on {cfg.NATS_NOTIFICATION_SUBJECT} \
+    after receiving a message on {cfg.NATS_CATASTODB_SUBJECT}",
 )
 
 
 @router.subscriber(
-    "properties",
-    description="Consumes messages from names topic and produces messages to greetings topic",
+    cfg.NATS_CATASTODB_SUBJECT,
+    description=f"\
+    Consumes messages from {cfg.NATS_CATASTODB_SUBJECT} \
+    topic and produces messages to {cfg.NATS_NOTIFICATION_SUBJECT} topic",
     stream=stream,
     deliver_policy=DeliverPolicy.NEW,
 )
@@ -36,7 +41,7 @@ async def on_properties(msg: Property, logger: Logger) -> None:
     property = f"Delivering {msg.property_id}"
     logger.info(property)
     target = Target(message=msg)
-    await router.broker.publish(target, subject="changes")
+    await router.broker.publish(target, subject=f"{cfg.NATS_NOTIFICATION_SUBJECT}")
 
 
 # @router.after_startup
