@@ -13,31 +13,43 @@ jobs:
     name: Deploy FastStream AsyncAPI Docs to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up python
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{ inputs.version }}
-      - name: Install Dependencies
-        shell: bash
-        run: |
-          set -ux
-          python -m pip install --upgrade pip
-          test -f pyproject.toml && pip install -e "." || echo "pyproject.toml doesn't exists"
-          test -f requirements.txt && pip install -r requirements.txt || echo "requirements.txt doesn't exists"
+          python-version: "3.10"
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+          installer-parallel: true
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+      - name: Install project
+        run: poetry install --no-interaction
       - uses: actions/setup-node@v3
         with:
           node-version: 18
       - name: Generate asyncapi.yaml
         shell: bash
         run: |
-          faststream docs gen --yaml app.cdc:app
+          poetry run faststream docs gen --yaml app.cdc:router
       - name: Generate AsyncAPI Docs
         shell: bash
         run: |
           npx --version
-          npx -y -p @asyncapi/generator ag --version
+          npx -y -p @asyncapi/generator@1.15.0 ag --version
           mkdir asyncapi_docs
-          npx -y -p @asyncapi/generator ag asyncapi.yaml @asyncapi/html-template -o asyncapi_docs
+          npx -y -p @asyncapi/generator@1.15.0 ag asyncapi.yaml @asyncapi/html-template -o asyncapi_docs
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
