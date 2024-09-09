@@ -108,4 +108,4 @@ class FactoryConfig:
             raise ValueError
 
 
-configuration = FactoryConfig(env_state=GlobalConfig().ENV_STATE)()
+configuration = FactoryConfig(env_state=GlobalConfig().ENV_STATE)()  # type: ignore
