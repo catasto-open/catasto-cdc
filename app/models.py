@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from typing_extensions import Annotated
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class PropertyTypeEnum(Enum):
@@ -21,7 +22,7 @@ class Property(BaseModel):
             ...,
             description="Identificativo dell'immobile",
             alias="identificativo_immobile",
-        )
+        ),
     ]
     changed_date: Annotated[
         datetime,
@@ -29,7 +30,7 @@ class Property(BaseModel):
             ...,
             description="Data di aggiornamento",
             alias="data_aggiornamento",
-        )
+        ),
     ]
     property_type: Annotated[
         PropertyTypeEnum,
@@ -37,7 +38,7 @@ class Property(BaseModel):
             ...,
             description="Tipologia dell'immobile",
             alias="tipo_immobile",
-        )
+        ),
     ]
     operation_id: Annotated[
         ChangeTypeEnum,
@@ -45,7 +46,7 @@ class Property(BaseModel):
             ...,
             description="Identificativo dell'operazione",
             alias="identificativo_operazione",
-        )
+        ),
     ]
 
     model_config = ConfigDict(populate_by_name=True)

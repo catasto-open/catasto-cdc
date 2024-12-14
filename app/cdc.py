@@ -1,12 +1,9 @@
-import asyncio
-import random
-
 from fastapi import FastAPI
-from faststream.nats import JStream, DeliverPolicy
-from faststream.nats.fastapi import NatsRouter, Logger
-from app.models import Property, Target
-from app.config.app import configuration as cfg
+from faststream.nats import DeliverPolicy, JStream
+from faststream.nats.fastapi import Logger, NatsRouter
 
+from app.config.app import configuration as cfg
+from app.models import Property, Target
 
 router = NatsRouter(
     cfg.NATS_SERVER_URL,
@@ -15,8 +12,8 @@ router = NatsRouter(
 )
 
 version = "0.1.0"
-title = "My FastStream service"
-description = "Description of my FastStream service"
+title = "CDC FastStream service"
+description = "Description of CDC FastStream service"
 
 app = FastAPI(title=title, version=version, description=description)
 stream = JStream(name=cfg.STREAM)
@@ -62,7 +59,6 @@ async def on_properties(msg: Property, logger: Logger) -> None:
 
 
 #             await router.broker.publish(Name(name=name), subject="names")
-
 
 
 #             await asyncio.sleep(2)

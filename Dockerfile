@@ -59,4 +59,4 @@ RUN poetry run python -c "import compileall; compileall.compile_path(maxlevels=1
 # use tini as the init process
 ENTRYPOINT ["tini", "-g", "--"]
 
-CMD ["poetry", "run", "uvicorn", "app.cdc:app", "--host", "0.0.0.0", "--port", "5000", "--loop", "asyncio"]
+CMD ["poetry", "run", "fastapi", "run", "app/cdc.py", "--app", "app", "--host", "0.0.0.0", "--port", "5000"]

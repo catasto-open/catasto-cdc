@@ -1,10 +1,11 @@
-import pytest
 from datetime import datetime
+
+import pytest
 from faststream.nats import TestNatsBroker
 
-from app.cdc import router, on_properties
+from app.cdc import router
 from app.config.app import configuration as cfg
-from app.models import Property, Target, PropertyTypeEnum, ChangeTypeEnum
+from app.models import ChangeTypeEnum, Property, PropertyTypeEnum, Target
 
 
 @router.subscriber(cfg.NATS_NOTIFICATION_SUBJECT)

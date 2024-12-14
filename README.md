@@ -220,9 +220,9 @@ Happy coding with [`FastStream`](https://github.com/airtai/faststream) Applicati
 
 Run the following command to start the FastAPI application that wraps the NATS broker:
 
-  ```bash
-  uvicorn app.cdc:app --host 0.0.0.0 --port 5000 --reload --loop asyncio
-  ```
+```bash
+fastapi dev app/cdc.py --app app --host 0.0.0.0 --port 5000 --reload
+```
 
 Please note:
   If the broker somehow has been restarted then you have to do the same with the application.

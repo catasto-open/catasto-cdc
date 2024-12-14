@@ -2,7 +2,7 @@
 set -e
 
 echo "Running mypy..."
-mypy cdc
+mypy app
 
 echo "Running bandit..."
-bandit -c pyproject.toml -r cdc
+bandit -c pyproject.toml -r app

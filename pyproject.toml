@@ -13,10 +13,9 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.10"
 nats-py = "^2.9.0"
-faststream = { extras = ["nats", "docs"], version = "^0.5.20" }
-fastapi = "^0.113.0"
-uvicorn = "^0.30.6"
-pydantic-settings = "^2.4.0"
+faststream = { extras = ["nats", "docs"], version = "^0.5.33" }
+fastapi = {extras = ["standard"], version = "^0.115.6"}
+pydantic-settings = "^2.7.0"
 
 
 [tool.poetry.group.dev.dependencies]
