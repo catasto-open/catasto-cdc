@@ -42,7 +42,8 @@ jobs:
       - name: Generate asyncapi.yaml
         shell: bash
         run: |
-          poetry run faststream docs gen --yaml app.cdc:router
+          # poetry run faststream docs gen --yaml app.cdc:router
+          poetry run python cli.py
       - name: Generate AsyncAPI Docs
         shell: bash
         run: |
