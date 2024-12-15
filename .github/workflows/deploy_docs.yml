@@ -48,9 +48,9 @@ jobs:
         shell: bash
         run: |
           npx --version
-          npx -y -p @asyncapi/generator@1.15.0 ag --version
+          npx -y -p @asyncapi/generator@2.5.0 ag --version
           mkdir asyncapi_docs
-          npx -y -p @asyncapi/generator@1.15.0 ag asyncapi.yaml @asyncapi/html-template -o asyncapi_docs
+          npx -y -p @asyncapi/generator@2.5.0 ag asyncapi.yaml @asyncapi/html-template -o asyncapi_docs
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
