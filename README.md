@@ -226,3 +226,122 @@ fastapi dev app/cdc.py --app app --host 0.0.0.0 --port 5000 --reload
 
 Please note:
   If the broker somehow has been restarted then you have to do the same with the application.
+
+### How to produce a message
+
+Run the following command:
+
+```shell
+python scripts/producer.py
+```
+
+### How to consume messages
+
+Processed messages in the channel can be consumed in different ways. For example, if only new messages need to be captured then you can run this script
+
+```shell
+python scripts/consumer.py
+```
+
+Alternatively with the NATS command line interface:
+
+```shell
+nats sub -s "nats://localhost:4222" --stream CATASTO --new CATASTO.changed
+```
+
+after executing `python scripts/producer.py` in the listening shell a message like this below will be received:
+
+```shell
+nats sub -s "nats://localhost:4222" --stream CATASTO --new CATASTO.changed
+23:48:50 Subscribing on CATASTO.changed 
+
+
+[#1] Received on "CATASTO.changed" with reply "_INBOX.LdMqbUh3RulBFK6i8Y2OeF.LdMqbUh3RulBFK6i8Y2Oi238b5"
+Nats-Expected-Stream: CATASTO
+content-type: application/json
+correlation_id: 473ffb05-6f38-4fcc-92d9-47cc5d1a0d56
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:49:00.589807", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+```
+
+It is also possible to start getting messages from the last one received in the channel onward:
+
+```shell
+nats sub -s "nats://localhost:4222" --stream CATASTO --last CATASTO.changed
+08:45:21 Subscribing to JetStream Stream holding messages with subject CATASTO.changed starting with the last message received 
+[#1] Received JetStream message: stream: CATASTO seq 10 / subject: CATASTO.changed / time: 2024-12-19T08:34:12+01:00
+content-type: application/json
+correlation_id: 2ec522f4-0d91-45c7-83e5-b13c56871492
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-19T08:34:12.740091", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+```
+
+Last but not least the channel might be consumed since the beginning:
+
+```shell
+nats sub -s "nats://localhost:4222" --stream CATASTO --all CATASTO.changed
+08:44:20 Subscribing to JetStream Stream holding messages with subject CATASTO.changed starting with the first message received 
+[#1] Received JetStream message: stream: CATASTO seq 3 / subject: CATASTO.changed / time: 2024-12-18T23:31:24+01:00
+content-type: application/json
+correlation_id: c26a6a41-df0c-4bdf-a1dd-7e78370e3e04
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:31:24.410493", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#2] Received JetStream message: stream: CATASTO seq 4 / subject: CATASTO.changed / time: 2024-12-18T23:31:33+01:00
+content-type: application/json
+correlation_id: 186bf4fd-1fa4-49fb-95ab-8ce68622b9ed
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:31:33.080604", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#3] Received JetStream message: stream: CATASTO seq 5 / subject: CATASTO.changed / time: 2024-12-18T23:39:19+01:00
+content-type: application/json
+correlation_id: 58662792-db99-46e7-a20f-24742ffb3bab
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:39:19.273525", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#4] Received JetStream message: stream: CATASTO seq 6 / subject: CATASTO.changed / time: 2024-12-18T23:43:29+01:00
+content-type: application/json
+correlation_id: 9b53b695-05aa-409b-adf1-d45723854171
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:43:29.828357", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#5] Received JetStream message: stream: CATASTO seq 7 / subject: CATASTO.changed / time: 2024-12-18T23:46:42+01:00
+content-type: application/json
+correlation_id: 04118a08-5af0-4e6a-aac4-4006268879b2
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:46:42.207642", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#6] Received JetStream message: stream: CATASTO seq 8 / subject: CATASTO.changed / time: 2024-12-18T23:49:00+01:00
+correlation_id: 473ffb05-6f38-4fcc-92d9-47cc5d1a0d56
+Nats-Expected-Stream: CATASTO
+content-type: application/json
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-18T23:49:00.589807", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#7] Received JetStream message: stream: CATASTO seq 9 / subject: CATASTO.changed / time: 2024-12-19T08:33:12+01:00
+content-type: application/json
+correlation_id: 039838cc-6ed6-41f3-922d-4ad95f0660ae
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-19T08:33:13.062279", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+
+
+[#8] Received JetStream message: stream: CATASTO seq 10 / subject: CATASTO.changed / time: 2024-12-19T08:34:12+01:00
+content-type: application/json
+correlation_id: 2ec522f4-0d91-45c7-83e5-b13c56871492
+Nats-Expected-Stream: CATASTO
+
+{"identificativo_immobile": 1, "data_aggiornamento": "2024-12-19T08:34:12.740091", "tipo_immobile": "Fabbricati", "identificativo_operazione": "ACCORPAMENTO"}
+```
